@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 
 const TwoFactorAuthentication = () => {
-  const { session } = useSession();
   const [verificationCode, setVerificationCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -18,7 +17,7 @@ const TwoFactorAuthentication = () => {
 
     if (response.status === 200) {
       // Redirect the user to the `/protected` page.
-      window.location.href = "/protected";
+      window.location.href = "/homepage";
     } else {
       // Display an error message.
       setErrorMessage(response.statusText);
