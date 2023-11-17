@@ -11,8 +11,12 @@
   "dependencies": {
     "next": "14.0.1",
     "next-auth": "^4.24.4",
+    "node-json-db": "^2.3.0",
+    "qrcode": "^1.5.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "speakeasy": "^2.0.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
