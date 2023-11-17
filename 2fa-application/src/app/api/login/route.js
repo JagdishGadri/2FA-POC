@@ -13,27 +13,41 @@ export async function POST(request, response) {
     // Initialize JsonDB
     const db = await initializeDB();
 
-    // Extract username and password from the request body
-    const { username, password } = await request.json();
+    // Extract email and password from the request body
+    const { email, password } = await request.json();
 
-    // Check for empty username or password
-    if (!username || !password) {
+    // Check for empty email or password
+    if (!email || !password) {
       return NextResponse.json(
-        { error: "Invalid username or password" },
+        { error: "Invalid email or password" },
         { status: 400 }
       );
     }
 
     // Build the path for user data
-    const path = `/users/${username}`;
+    const path = `/users/${email}`;
 
     // Retrieve user data from the database
-    const user = await db.getData(path);
-
+    const user = await db.exists(path);
     // Return a JSON response with user data
-    return NextResponse.json({
-      user,
-    });
+    if (user) {
+      const userDetails = await db.getData(path);
+      console.log(
+        "userDetails?.password === password",
+        userDetails?.password,
+        password
+      );
+      return userDetails?.password === password
+        ? NextResponse.json({
+            userDetails,
+          })
+        : NextResponse.json({ error: "Wrong credentials" }, { status: 401 });
+    } else {
+      return NextResponse.json(
+        { error: "Please create a account first." },
+        { status: 404 }
+      );
+    }
   } catch (err) {
     // Handle errors and return an error response
     console.error("Error:", err);

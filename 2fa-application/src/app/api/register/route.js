@@ -10,9 +10,9 @@ const db = new JsonDB(new Config("myDataBase", true, false, "/"));
 export async function POST(request, response) {
   const id = uuid.v4();
   const body = await request.json();
-  const { username, password } = body;
+  const { email, password } = body;
   try {
-    const path = `/users/${username}`;
+    const path = `/users/${email}`;
     const user = await db.exists(path);
 
     if (user) {
@@ -24,7 +24,7 @@ export async function POST(request, response) {
       const temp_secret = speakeasy.generateSecret();
       db.push(path, {
         id,
-        username,
+        email,
         password,
         temp_secret: temp_secret?.base32,
         qrCodeURL: temp_secret?.otpauth_url,

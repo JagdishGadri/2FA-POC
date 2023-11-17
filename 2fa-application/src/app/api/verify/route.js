@@ -16,35 +16,37 @@ export async function POST(request, response) {
     const db = await initializeDB();
 
     // Extract username and password from the request body
-    const { token, userId } = await request.json();
+    const { userToken, email } = await request.json();
 
     // Check for empty username or password
-    if (!username || !password) {
-      return NextResponse.json(
-        { error: "Invalid username or password" },
-        { status: 400 }
-      );
-    }
+    // if (!username || !password) {
+    //   return NextResponse.json(
+    //     { error: "Invalid username or password" },
+    //     { status: 400 }
+    //   );
+    // }
+    // console.log({ email, userToken }, "ggg");
 
     // Build the path for user data
-    const path = `/users/${username}`;
+
+    const path = `/users/${email}`;
 
     // Retrieve user data from the database
     const user = await db.getData(path);
-
-    const verified = speakeasy.totp.verified({
+    console.log("user", user);
+    const verified = speakeasy.totp.verify({
       secret: user.temp_secret,
       encoding: "base32",
       token: userToken,
+      window: 1,
     });
 
     if (verified) {
-      db.push(path, { id: userId, secret: user.temp_secret });
-      return NextResponse.json({ verified: true });
+      db.push(path, { ...user, isVerified: true });
+
+      return NextResponse.json({ ...user, verified: true });
     } else {
-      return NextResponse.json({
-        verified: false,
-      });
+      return NextResponse.json({ ...user, verified: false });
     }
   } catch (err) {
     // Handle errors and return an error response
