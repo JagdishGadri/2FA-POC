@@ -1,8 +1,11 @@
+'use client'
 import React from 'react'
 
 function HomePage() {
+    const userData = JSON.parse(localStorage.getItem('userInfo'))
+    console.log("userData/", userData)
     return (
-        <div>This is home page</div>
+        <div>Hey, Welcome {userData?.email} </div>
     )
 }
 

@@ -1,16 +1,14 @@
 'use client'
-import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
 import QRCode from 'qrcode'
 import VerifyQRCode from "./VerifyQRCode";
+import { toast } from "react-toastify";
 
 // Get the data URL of the authenticator URL
 
 const LoginForm = () => {
-    const router = useRouter()
     const [qrCodeSrc, setQrCodeSrc] = useState('')
     const [showVerifyCode, setShowVerifyCode] = useState(false)
-
     const [isLoginMode, setIsLoginMode] = useState(true)
     const [formValues, setFormValues] = useState({ email: '', password: '' })
 
@@ -28,6 +26,7 @@ const LoginForm = () => {
             if (response.status === 200) {
                 const res = await response.json()
                 console.log("rsponse", res)
+                toast("Logged in");
                 !res?.userDetails?.isVerified && QRCode.toDataURL(res?.userDetails?.qrCodeURL, (err, data_url) => {
                     setQrCodeSrc(data_url)
                 });
@@ -43,9 +42,12 @@ const LoginForm = () => {
                     'Content-Type': 'application/json',
                 }
             })
-            const res = await response.json()
-            console.log("respose", res)
-
+            if (response.status === 200) {
+                const res = await response.json()
+                console.log("rsponse", res)
+                toast("Account created, Please login to proceed further.");
+                setIsLoginMode(true)
+            }
         }
     }
 
@@ -55,12 +57,12 @@ const LoginForm = () => {
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
             <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                    <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white block mx-auto">
                         {isLoginMode ? 'Sign in to your account' : 'Create your account'}
                     </h1>
                     {showVerifyCode ?
                         <VerifyQRCode qrCodeSrc={qrCodeSrc} userEmail={formValues.email} /> :
-                        <form className="space-y-4 md:space-y-6" action="#" onSubmit={handleSubmit}>
+                        <form className="space-y-4 md:space-y-6" method='post' action="#" onSubmit={handleSubmit}>
                             <div>
                                 <label
                                     htmlFor="email"
@@ -79,6 +81,7 @@ const LoginForm = () => {
 
                                 />
                             </div>
+
                             <div>
                                 <label
                                     htmlFor="password"

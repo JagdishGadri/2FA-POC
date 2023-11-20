@@ -1,8 +1,10 @@
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
 function VerifyQRCode({ qrCodeSrc, userEmail }) {
     const [enteredOTP, setEnteredOTP] = useState('')
     const [showQRCode, setShowQRCode] = useState(qrCodeSrc)
+    const router = useRouter()
     const verifyOTP = async () => {
         const response = await fetch('/api/verify', {
             method: 'POST',
@@ -14,19 +16,27 @@ function VerifyQRCode({ qrCodeSrc, userEmail }) {
         const res = await response.json()
         console.log("res", res)
         setShowQRCode(!res?.isVerified)
+        if (res.verified) {
+            localStorage.setItem('userInfo', JSON.stringify(res))
+            router.push('/home')
+        }
     }
 
     return (
-        <div>
-            {showQRCode && <img src={`${qrCodeSrc}`} alt="" />} <><input
-                className=" h-8 text-center border border-gray-300 rounded"
-                onChange={(e) => setEnteredOTP(e.target.value)}
-            />
-                <button
-                    className='w-full border bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800'
-                    onClick={verifyOTP}
-                >Verify</button></>
+        <div className='container '>
+            {showQRCode && <img className='mx-auto' src={`${qrCodeSrc}`} alt="" />}
+            <div >
+                <input
+                    className="block mx-auto h-8 text-center border border-gray-300 rounded mb-3 "
+                    placeholder='Enter 6 digit code here'
+                    onChange={(e) => setEnteredOTP(e.target.value)}
+                />
+            </div>
 
+            <button
+                className='w-full mx-auto p-2 border font-medium rounded-lg bg-gray-200 hover:bg-gray-300'
+                onClick={verifyOTP}
+            >Verify</button>
         </div>
     )
 }
