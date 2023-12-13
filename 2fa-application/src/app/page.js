@@ -1,11 +1,22 @@
-import Image from "next/image";
+"use client";
+import LoginForm from "@/components/LoginForm";
+import { useRouter } from "next/navigation";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+const App = () => {
+  const userData = JSON.parse(localStorage.getItem("userInfo"));
 
-export default function Home() {
+  const router = useRouter();
+  if (userData) {
+    router.push("/home");
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        2FA App
-      </div>
-    </main>
+    <>
+      <ToastContainer />
+      <LoginForm />
+    </>
   );
-}
+};
+
+export default App;
