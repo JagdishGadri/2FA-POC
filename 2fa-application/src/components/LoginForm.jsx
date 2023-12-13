@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import QRCode from 'qrcode'
 import VerifyQRCode from "./VerifyQRCode";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 // Get the data URL of the authenticator URL
 
@@ -11,9 +12,6 @@ const LoginForm = () => {
     const [showVerifyCode, setShowVerifyCode] = useState(false)
     const [isLoginMode, setIsLoginMode] = useState(true)
     const [formValues, setFormValues] = useState({ email: '', password: '' })
-
-
-
 
     const handleSubmit = async (e) => {
         e.preventDefault()
