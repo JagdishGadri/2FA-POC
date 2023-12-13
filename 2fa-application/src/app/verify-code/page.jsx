@@ -14,7 +14,6 @@ const VerifyCode = ({ qrCodeSrc }) => {
     const handleSubmit = async () => {
 
         if (isLoginMode) {
-            console.log("formValues", formValues)
             const response = await fetch('/api/login', {
                 method: 'POST',
                 body: JSON.stringify(formValues),
@@ -26,7 +25,6 @@ const VerifyCode = ({ qrCodeSrc }) => {
             QRCode.toDataURL(res?.userDetails?.qrCodeURL, (err, data_url) => {
                 setQrCodeSrc(data_url)
             });
-            console.log("respose login", res.user)
         } else {
             const response = await fetch('/api/register', {
                 method: 'POST',
@@ -36,7 +34,6 @@ const VerifyCode = ({ qrCodeSrc }) => {
                 }
             })
             const res = await response.json()
-            console.log("respose", res)
 
         }
     }

@@ -1,5 +1,6 @@
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
 function VerifyQRCode({ qrCodeSrc, userEmail }) {
     const [enteredOTP, setEnteredOTP] = useState('')
@@ -14,11 +15,15 @@ function VerifyQRCode({ qrCodeSrc, userEmail }) {
             }
         })
         const res = await response.json()
-        console.log("res", res)
-        setShowQRCode(!res?.isVerified)
+        setShowQRCode(!res?.isQRCodeScanned)
         if (res.verified) {
+            toast.success('User authenticated successfully.')
             localStorage.setItem('userInfo', JSON.stringify(res))
             router.push('/home')
+        } else if (res?.error) {
+            toast.error(res.error)
+        } else {
+            toast.error('Incorrect code, Please try again.')
         }
     }
 
@@ -29,12 +34,13 @@ function VerifyQRCode({ qrCodeSrc, userEmail }) {
                 <input
                     className="block mx-auto h-8 text-center border border-gray-300 rounded mb-3 "
                     placeholder='Enter 6 digit code here'
+                    type='password'
                     onChange={(e) => setEnteredOTP(e.target.value)}
                 />
             </div>
 
             <button
-                className='w-full mx-auto p-2 border font-medium rounded-lg bg-gray-200 hover:bg-gray-300'
+                className='w-full mx-auto p-2 border font-medium rounded-lg bg-blue-500 hover:bg-blue-700 text-white'
                 onClick={verifyOTP}
             >Verify</button>
         </div>

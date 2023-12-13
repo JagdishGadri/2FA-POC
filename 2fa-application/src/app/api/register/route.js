@@ -1,36 +1,35 @@
+import { dbInstance } from "@/utils/dbUtil";
 import { NextResponse } from "next/server";
-
-const speakeasy = require("speakeasy");
-const uuid = require("uuid");
-const { JsonDB } = require("node-json-db");
-const { Config } = require("node-json-db/dist/lib/JsonDBConfig");
-
-const db = new JsonDB(new Config("myDataBase", true, false, "/"));
+import speakeasy from "speakeasy";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request, response) {
-  const id = uuid.v4();
+  const id = uuidv4();
   const body = await request.json();
   const { email, password } = body;
   try {
+    // Build the path for user data
     const path = `/users/${email}`;
-    const user = await db.exists(path);
 
-    if (user) {
+    // Retrieve user data from the database
+    const userExists = await dbInstance.exists(path);
+
+    if (userExists) {
       return NextResponse.json(
         { error: "User already exists" },
         { status: 403 }
       );
     } else {
+      // Store user data in DB with temp_secret and QR code URL
       const temp_secret = speakeasy.generateSecret();
-      db.push(path, {
+      dbInstance.push(path, {
         id,
         email,
         password,
         temp_secret: temp_secret?.base32,
-        qrCodeURL: temp_secret?.otpauth_url,
+        otpAuthURL: temp_secret?.otpauth_url,
       });
     }
-
     return NextResponse.json({
       body,
     });
