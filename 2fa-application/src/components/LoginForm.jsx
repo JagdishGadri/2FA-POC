@@ -28,7 +28,7 @@ const LoginForm = () => {
             if (response.status === 200) {
                 toast.success("Please enter verification code.");
                 // Get the data URL of the authenticator URL
-                !res?.userDetails?.isVerified && QRCode.toDataURL(res?.userDetails?.otpAuthURL, (err, data_url) => {
+                !res?.userDetails?.isQRCodeScanned && QRCode.toDataURL(res?.userDetails?.otpAuthURL, (err, data_url) => {
 
                     // Used to display this data URL to the user in an <img> tag
                     setQrCodeSrc(data_url)
