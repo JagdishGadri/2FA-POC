@@ -2,6 +2,8 @@
 
 ## POC Objective: To secure our app with extra layer of protection using two factor authentication.
 
+## Demo: https://www.loom.com/share/f02295fb15174178b499c9d5dcdd85ca?sid=abc91bbc-226e-487c-8637-abfa1f6b1832
+
 ## Implementation:
 > 1. Create your account using your own credential. 
 > 2. Login using your credentials, QR code will be shown upon first login.
