@@ -19,6 +19,7 @@ export async function POST(request, response) {
       encoding: "base32",
       token: userToken,
       window: 1,
+      step: 30,
     });
     const userDetailsCloned = { ...user };
     delete userDetailsCloned.password;
